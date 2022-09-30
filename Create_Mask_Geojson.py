@@ -7,29 +7,46 @@ import os
 import fiona
 import rasterio
 import rasterio.mask
-from osgeo import osr, ogr, gdal
 import numpy as np
-import sys
-np.set_printoptions(threshold=sys.maxsize)
+import cv2
 
-
-geojsonDir_path = "/Users/zczuba/Documents/Sanborn_Projects/roadExtraction/geojson_files"
-imgDir_path = "/Users/zczuba/Documents/Sanborn_Projects/roadExtraction/RGB-PanSharpen"
+GEOJSON_DIR_PATH = "/Users/zczuba/Documents/Sanborn_Projects/roadExtraction/geojson_files"
+IMG_DIR_PATH = "/Users/zczuba/Documents/Sanborn_Projects/roadExtraction/RGB-PanSharpen"
+MASK_DIR_PATH = "/Users/zczuba/Documents/Sanborn_Projects/roadExtraction/geojson_masks"
 
 #-----------------------------------------------------------------------------
 # To test individual image uncomment this part
 #-----------------------------------------------------------------------------
-# filename = "190.tif"
-# path_to_img = os.path.join(imgDir_path, filename) 
-# path_to_file = os.path.join(geojsonDir_path, filename.split('.')[0] + ".json")
-# create_mask = CreateMask(path_to_img, path_to_file)
-# xy, pixels, imgtif, features = create_mask.extract_lane_points()
-# # create_mask.display()
-# create_mask.save_mask(geojsonDir_path, imgDir_path)
-# for feature in features:
-#     if len(feature["geometry"]["coordinates"])>1:
-#         for i in range(0, len(feature["geometry"]["coordinates"])):
-#             print(feature["geometry"]["coordinates"][i])
+
+# filename = "A3_OSM.geojson"
+# path_to_file = os.path.join(GEOJSON_DIR_PATH, filename)
+# path_to_img = os.path.join(IMG_DIR_PATH, filename.split('_')[0] + "_IMG.tif")
+
+# mask_name = filename.split(".")[0] + ".tif"
+
+# with fiona.open(path_to_file, "r") as geojson:
+#     geoms = [feature["geometry"] for feature in geojson]
+
+# with rasterio.open(path_to_img) as src:
+#     out_image, out_transform = rasterio.mask.mask(src, geoms, crop=False, nodata=0, invert=False)
+#     out_meta = src.meta.copy()
+
+# out_meta.update({"driver": "GTiff",
+#                 "height": out_image.shape[1],
+#                 "width": out_image.shape[2],
+#                 "transform": out_transform})
+
+# path_to_mask = os.path.join(MASK_DIR_PATH, mask_name)
+
+# with rasterio.open(path_to_mask, "w", **out_meta) as dest:
+#     binarized = np.where(out_image > 0, 255, 0)
+#     dest.write(binarized)
+
+# img = cv2.imread(path_to_mask)
+# kernel = np.ones((5, 5), np.uint8)
+# img_dilation = cv2.dilate(img, kernel, iterations=9)
+
+# cv2.imwrite(path_to_mask, img_dilation)
 
 #-----------------------------------------------------------------------------
 
@@ -38,13 +55,11 @@ imgDir_path = "/Users/zczuba/Documents/Sanborn_Projects/roadExtraction/RGB-PanSh
 # To run on a dirctory uncomment this part
 #-----------------------------------------------------------------------------
 # convert the geojson to mask
-count = 0
-for filename in os.listdir(geojsonDir_path):
+
+for filename in os.listdir(GEOJSON_DIR_PATH):
     if filename.endswith('.geojson'):
-        # filename = "192.json"
-        # imgDir_path = "20190116/TIF_TFW"
-        path_to_file = os.path.join(geojsonDir_path, filename)
-        path_to_img = os.path.join(imgDir_path, filename.split('_')[0] + "_IMG.tif")       
+        path_to_file = os.path.join(GEOJSON_DIR_PATH, filename)
+        path_to_img = os.path.join(IMG_DIR_PATH, filename.split('_')[0] + "_IMG.tif")
         
         if os.path.exists(path_to_file) and os.path.exists(path_to_img):
             print(filename)
@@ -54,7 +69,7 @@ for filename in os.listdir(geojsonDir_path):
                 geoms = [feature["geometry"] for feature in geojson]
 
             with rasterio.open(path_to_img) as src:
-                out_image, out_transform = rasterio.mask.mask(src, geoms, crop=False, invert=False)
+                out_image, out_transform = rasterio.mask.mask(src, geoms, crop=False, nodata=0, invert=False)
                 out_meta = src.meta.copy()
 
             out_meta.update({"driver": "GTiff",
@@ -62,17 +77,20 @@ for filename in os.listdir(geojsonDir_path):
                             "width": out_image.shape[2],
                             "transform": out_transform})
 
-            with rasterio.open(mask_name, "w", **out_meta) as dest:
-                # print(out_meta)
-                
-                dest.write(out_image)
+            path_to_mask = os.path.join(MASK_DIR_PATH, mask_name)
+
+            with rasterio.open(path_to_mask, "w", **out_meta) as dest:
+                binarized = np.where(out_image > 0, 255, 0)
+                dest.write(binarized)
+
+            img = cv2.imread(path_to_mask)
+            kernel = np.ones((5, 5), np.uint8)
+            img_dilation = cv2.dilate(img, kernel, iterations=9)
+            
+            cv2.imwrite(path_to_mask, img_dilation)
             
         else:
             print(f"Error with {filename}")
-        count += 1
-
-        # if count==2:
-        #     break
 
 #-----------------------------------------------------------------------------
 #-----------------------------------------------------------------------------
