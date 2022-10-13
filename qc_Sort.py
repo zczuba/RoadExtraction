@@ -22,16 +22,19 @@ for filename in os.listdir(UNSORTED_DIR_PATH):
         img = cv2.imread(path_to_img)
 
         while(1):
-            print(filename)
             cv2.imshow(filename, img)
             k = cv2.waitKey(0)
             if k == 27:    # Esc key to stop
                 exit()
             elif k == 13:  # Enter
                 goodDest = os.path.join(GOOD_IMG_PATH, filename)
+                cv2.destroyAllWindows()
                 os.rename(path_to_img, goodDest)
+                print(f'{filename} moved to GOOD')
                 break
             elif k == 127:  # Delete
                 badDest = os.path.join(BAD_IMG_PATH, filename)
+                cv2.destroyAllWindows()
                 os.rename(path_to_img, badDest)
+                print(f'{filename} moved to BAD')
                 break
