@@ -2,13 +2,16 @@ import cv2
 import numpy as np
 import os
 
-ORIGINAL_IMG_PATH = "/Users/zczuba/Documents/Sanborn_Projects/roadExtraction/Czuba_Data/Original_Data/Images"
-ORIGINAL_MASK_PATH = "/Users/zczuba/Documents/Sanborn_Projects/roadExtraction/Czuba_Data/Original_Data/Masks"
+# Be sure to set the correct file paths for everything
+ORIGINAL_IMG_PATH = "/Users/zczuba/Documents/Sanborn_Projects/roadExtraction/Dataset1/Images/Zac_Half_Img"
+ORIGINAL_MASK_PATH = "/Users/zczuba/Documents/Sanborn_Projects/roadExtraction/Dataset1/Masks/Zac_Half_Mask"
 
-MODDED_IMG_PATH = "/Users/zczuba/Documents/Sanborn_Projects/roadExtraction/Czuba_Data/Modded_Data/Images"
-MODDED_MASK_PATH = "/Users/zczuba/Documents/Sanborn_Projects/roadExtraction/Czuba_Data/Modded_Data/Masks"
+MODDED_IMG_PATH = "/Users/zczuba/Documents/Sanborn_Projects/roadExtraction/Dataset1/Images/Modded_Img"
+MODDED_MASK_PATH = "/Users/zczuba/Documents/Sanborn_Projects/roadExtraction/Dataset1/Masks/Modded_Mask"
 
-# up == 0, down == 1
+BAD_IMG_PATH = "/Users/zczuba/Documents/Sanborn_Projects/roadExtraction/Dataset1/Images/Bad_Img"
+BAD_MASK_PATH = "/Users/zczuba/Documents/Sanborn_Projects/roadExtraction/Dataset1/Masks/Bad_Mask"
+
 
 for filename in os.listdir(ORIGINAL_IMG_PATH):
     if filename.endswith('.tif'):
@@ -28,7 +31,7 @@ for filename in os.listdir(ORIGINAL_IMG_PATH):
             cv2.imshow(filename, combo)
             k = cv2.waitKey(0)
 
-            if k == 27:    # Esc key to stop
+            if k == 27:    # Esc key to quit the script
                 exit()
 
             elif k == 0:    # Up arrow - Dilate 
@@ -39,19 +42,24 @@ for filename in os.listdir(ORIGINAL_IMG_PATH):
                 moddedMask = cv2.erode(moddedMask, kernel, iterations=1)
                 combo = cv2.add(img, moddedMask)
 
-            elif k == 127:  # Delete - Reset to Original
+            elif k == 32:  # Space - Reset to Original
                 moddedMask = mask
                 combo = cv2.add(img, moddedMask)
 
-            elif k == 13:  # Enter - Save New Mask
+            elif k == 13:   # Enter - Save New Mask
                 moddedImgDest = os.path.join(MODDED_IMG_PATH, filename)
                 moddedMaskDest = os.path.join(MODDED_MASK_PATH, filename)
                 cv2.destroyAllWindows()
                 cv2.imwrite(moddedMaskDest, moddedMask)
                 os.rename(path_to_img, moddedImgDest)
-                print(f'{filename} moved to GOOD')
+                print(f'{filename} moved to MODDED')
                 break
 
-            
-
-            
+            elif k == 127:    # Delete - Mark Image as BAD
+                badImgDest = os.path.join(BAD_IMG_PATH, filename)
+                badMaskDest = os.path.join(BAD_MASK_PATH, filename)
+                cv2.destroyAllWindows()
+                os.rename(path_to_img, badImgDest)
+                os.rename(path_to_mask, badMaskDest)
+                print(f'{filename} moved to BAD')
+                break
