@@ -94,7 +94,7 @@ for filename in os.listdir(ORIGINAL_IMG_PATH):
                 moddedMaskDest = os.path.join(MODDED_MASK_PATH, filename)
                 megaMask = stitch_mega_mask(moddedMaskList)
                 cv2.destroyAllWindows()
-                cv2.imwrite(moddedMaskDest, moddedMegaMask)
+                cv2.imwrite(moddedMaskDest, megaMask)
                 os.rename(path_to_img, moddedImgDest)
                 print(f'{filename} moved to MODDED')
                 break
