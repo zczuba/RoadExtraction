@@ -35,13 +35,15 @@ for filename in os.listdir(ORIGINAL_IMG_PATH):
         originalMaskList = generate_mask_list(filename)
 
         img = cv2.imread(path_to_img)
-        combo = cv2.add(img, originalMaskList[0])
+        megaMask = stitch_mega_mask(originalMaskList)
+        combo = cv2.add(img, megaMask)
         # cv2.namedWindow(filename)
         # cv2.moveWindow(filename, 0, 0)
 
         kernel = np.ones((5, 5), np.uint8)
         moddedMaskList = originalMaskList.copy()
         index = 0
+        preview = True
         megaMaskShowing = False
 
         while(1):
@@ -52,12 +54,12 @@ for filename in os.listdir(ORIGINAL_IMG_PATH):
                 exit()
 
             elif k == 0:    # Up arrow - Dilate
-                if megaMaskShowing == False:        
+                if megaMaskShowing == False and preview == False:        
                     moddedMaskList[index] = cv2.dilate(moddedMaskList[index], kernel, iterations=1)
                     combo = cv2.add(img, moddedMaskList[index])
 
             elif k == 1:    # Down arrow - Erode
-                if megaMaskShowing == False:
+                if megaMaskShowing == False and preview == False:
                     moddedMaskList[index] = cv2.erode(moddedMaskList[index], kernel, iterations=1)
                     combo = cv2.add(img, moddedMaskList[index])
 
@@ -66,12 +68,16 @@ for filename in os.listdir(ORIGINAL_IMG_PATH):
                     combo = cv2.add(img, moddedMaskList[index])
                     megaMaskShowing = False
 
-                elif index > 0:
+                elif index > 0 and preview == False:
                     index -= 1
                     combo = cv2.add(img, moddedMaskList[index])
 
             elif k == 3: # Right arrow - Cycle forward line string
-                if index < len(moddedMaskList) - 1:
+                if preview == True:
+                    combo = cv2.add(img, moddedMaskList[index])
+                    preview = False
+
+                elif index < len(moddedMaskList) - 1:
                     index += 1
                     combo = cv2.add(img, moddedMaskList[index])
                 else:
@@ -80,7 +86,7 @@ for filename in os.listdir(ORIGINAL_IMG_PATH):
                     megaMaskShowing = True
 
             elif k == 32:  # Space - Reset current line to Original
-                if megaMaskShowing == False:
+                if megaMaskShowing == False and preview == False:
                     moddedMaskList[index] = originalMaskList[index]
                     combo = cv2.add(img, moddedMaskList[index])
 
@@ -99,7 +105,7 @@ for filename in os.listdir(ORIGINAL_IMG_PATH):
                     os.rename(path_to_img, moddedImgDest)
                     print(f'{filename} moved to MODDED')
                     break
-                
+
 
             elif k == 127:    # Delete - Mark Image as BAD
                 badImgDest = os.path.join(BAD_IMG_PATH, filename)
