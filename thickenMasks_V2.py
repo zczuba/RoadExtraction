@@ -90,14 +90,16 @@ for filename in os.listdir(ORIGINAL_IMG_PATH):
                 combo = cv2.add(img, moddedMaskList[index])
                 
             elif k == 13:   # Enter - Save New Mask
-                moddedImgDest = os.path.join(MODDED_IMG_PATH, filename)
-                moddedMaskDest = os.path.join(MODDED_MASK_PATH, filename)
-                megaMask = stitch_mega_mask(moddedMaskList)
-                cv2.destroyAllWindows()
-                cv2.imwrite(moddedMaskDest, megaMask)
-                os.rename(path_to_img, moddedImgDest)
-                print(f'{filename} moved to MODDED')
-                break
+                if megaMaskShowing == True:
+                    moddedImgDest = os.path.join(MODDED_IMG_PATH, filename)
+                    moddedMaskDest = os.path.join(MODDED_MASK_PATH, filename)
+                    megaMask = stitch_mega_mask(moddedMaskList)
+                    cv2.destroyAllWindows()
+                    cv2.imwrite(moddedMaskDest, megaMask)
+                    os.rename(path_to_img, moddedImgDest)
+                    print(f'{filename} moved to MODDED')
+                    break
+                
 
             elif k == 127:    # Delete - Mark Image as BAD
                 badImgDest = os.path.join(BAD_IMG_PATH, filename)
