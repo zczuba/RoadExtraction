@@ -45,8 +45,6 @@ for filename in os.listdir(ORIGINAL_IMG_PATH):
         westKernel = np.array([[0,0,0,0,1], [0,0,0,0,1], [0,0,0,0,1] ,[0,0,0,0,1] , [0,0,0,0,1]], np.uint8)
         northKernel = np.array([[0,0,0,0,0], [0,0,0,0,0], [0,0,0,0,0] ,[0,0,0,0,0] , [1,1,1,1,1]], np.uint8)
         eastKernel = np.array([[1,0,0,0,0], [1,0,0,0,0], [1,0,0,0,0] ,[1,0,0,0,0] , [1,0,0,0,0]], np.uint8)
-
-        selectedKernel = defaultKernel
         
         moddedMaskList = originalMaskList.copy()
         index = 0
@@ -62,24 +60,22 @@ for filename in os.listdir(ORIGINAL_IMG_PATH):
 
             elif k == 0:  # Up arrow - Dilate
                 if megaMaskShowing == False and preview == False:        
-                    moddedMaskList[index] = cv2.dilate(moddedMaskList[index], selectedKernel, iterations=1)
+                    moddedMaskList[index] = cv2.dilate(moddedMaskList[index], defaultKernel, iterations=1)
                     combo = cv2.add(img, moddedMaskList[index])
 
             elif k == 1:  # Down arrow - Erode
                 if megaMaskShowing == False and preview == False:
-                    moddedMaskList[index] = cv2.erode(moddedMaskList[index], selectedKernel, iterations=1)
+                    moddedMaskList[index] = cv2.erode(moddedMaskList[index], defaultKernel, iterations=1)
                     combo = cv2.add(img, moddedMaskList[index])
 
             elif k == 2:  # Left arrow - Cycle back line string
                 if megaMaskShowing == True:
                     combo = cv2.add(img, moddedMaskList[index])
                     megaMaskShowing = False
-                    selectedKernel = defaultKernel
 
                 elif index > 0 and preview == False:
                     index -= 1
                     combo = cv2.add(img, moddedMaskList[index])
-                    selectedKernel = defaultKernel
 
             elif k == 3:  # Right arrow - Cycle forward line string
                 if preview == True:
@@ -89,27 +85,31 @@ for filename in os.listdir(ORIGINAL_IMG_PATH):
                 elif index < len(moddedMaskList) - 1:
                     index += 1
                     combo = cv2.add(img, moddedMaskList[index])
-                    selectedKernel = defaultKernel
 
                 else:
                     megaMask = stitch_mega_mask(moddedMaskList)
                     combo = cv2.add(img, megaMask)
                     megaMaskShowing = True
-            
-            elif k == 101: # E - Set kernel to default
-                selectedKernel = defaultKernel
 
-            elif k == 119: # W - Set kernel to North
-                selectedKernel = northKernel
+            elif k == 119: # W - Nudge North
+                if megaMaskShowing == False and preview == False:
+                    moddedMaskList[index] = cv2.dilate(moddedMaskList[index], northKernel, iterations=1)
+                    combo = cv2.add(img, moddedMaskList[index])
 
-            elif k == 100: # D - Set kernel to East
-                selectedKernel = eastKernel
+            elif k == 100: # D - Nudge East
+                if megaMaskShowing == False and preview == False:
+                    moddedMaskList[index] = cv2.dilate(moddedMaskList[index], eastKernel, iterations=1)
+                    combo = cv2.add(img, moddedMaskList[index])
 
-            elif k == 115: # S - Set kernel to South
-                selectedKernel = southKernel
+            elif k == 115: # S - Nudge South
+                if megaMaskShowing == False and preview == False:
+                    moddedMaskList[index] = cv2.dilate(moddedMaskList[index], southKernel, iterations=1)
+                    combo = cv2.add(img, moddedMaskList[index])
 
-            elif k == 97:  # A - Set kernel to West
-                selectedKernel = westKernel
+            elif k == 97:  # A - Nudge West
+                if megaMaskShowing == False and preview == False:
+                    moddedMaskList[index] = cv2.dilate(moddedMaskList[index], westKernel, iterations=1)
+                    combo = cv2.add(img, moddedMaskList[index])
 
             elif k == 32:  # Space - Reset current line to Original
                 if megaMaskShowing == False and preview == False:
@@ -120,6 +120,7 @@ for filename in os.listdir(ORIGINAL_IMG_PATH):
                 moddedMaskList = originalMaskList.copy()
                 index = 0
                 combo = cv2.add(img, moddedMaskList[index])
+                megaMaskShowing == False
                 
             elif k == 13:  # Enter - Save New Mask
                 if megaMaskShowing == True:
