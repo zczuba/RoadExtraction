@@ -74,10 +74,12 @@ for filename in os.listdir(ORIGINAL_IMG_PATH):
                 if megaMaskShowing == True:
                     combo = cv2.add(img, moddedMaskList[index])
                     megaMaskShowing = False
+                    selectedKernel = defaultKernel
 
                 elif index > 0 and preview == False:
                     index -= 1
                     combo = cv2.add(img, moddedMaskList[index])
+                    selectedKernel = defaultKernel
 
             elif k == 3:  # Right arrow - Cycle forward line string
                 if preview == True:
@@ -87,6 +89,8 @@ for filename in os.listdir(ORIGINAL_IMG_PATH):
                 elif index < len(moddedMaskList) - 1:
                     index += 1
                     combo = cv2.add(img, moddedMaskList[index])
+                    selectedKernel = defaultKernel
+
                 else:
                     megaMask = stitch_mega_mask(moddedMaskList)
                     combo = cv2.add(img, megaMask)
