@@ -3,11 +3,11 @@ import numpy as np
 import os
 
 ##### PATHS #####
-ORIGINAL_IMG_PATH = ""
-ORIGINAL_MASK_PATH = ""
-MODDED_IMG_PATH = ""
-MODDED_MASK_PATH = ""
-BAD_IMG_PATH = ""
+ORIGINAL_IMG_PATH = "/mnt/vol1/312018241_HD_Map_Fern_Phoenix/Outputs/Model_Training_Data/Dataset_3_V2/Images"
+ORIGINAL_MASK_PATH = "/mnt/vol1/312018241_HD_Map_Fern_Phoenix/Outputs/Model_Training_Data/Dataset_3_V2/Masks"
+MODDED_IMG_PATH = "/mnt/vol1/312018241_HD_Map_Fern_Phoenix/Outputs/Modified_Data/Output_3/Images"
+MODDED_MASK_PATH = "/mnt/vol1/312018241_HD_Map_Fern_Phoenix/Outputs/Modified_Data/Output_3/Masks"
+BAD_IMG_PATH = "/mnt/vol1/312018241_HD_Map_Fern_Phoenix/Outputs/Modified_Data/Output_3/Bad_Images"
 
 
 ##### Functions #####
