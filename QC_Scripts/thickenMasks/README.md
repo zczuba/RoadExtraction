@@ -18,7 +18,7 @@ Opens an image with all of its individual masks overlayed on top.
 
 Available Actions:
 Right Arrow Key = Start adjusting mask line segments for the image (Jump to next section)
-Backspace = Move image to Bad Folder and start process over with next image
+Backspace = Move image to Bad Folder and start process with next image
 
 #### INDIVIDUAL LINE STRING ADJUSTMENT
 Opens the current image with only one Mask Line Segment open
@@ -26,15 +26,21 @@ Opens the current image with only one Mask Line Segment open
 Available Actions:
  - Up Arrow Key = Dilate line string (make thicker)
  - Down Arrow Key = Erode line string (make thinner)
+ - Right Arrow Key = Advance to next line string
+    - Note: if on the final line string, pressing right will show a final view of all the line strings at once
+ - Left Arrow Key = Step back to previous line string to edit
 
  - W Key = Nudge linestring North
     - Note: Result of nudging varies on the angle of the linestring.
-      - For North/South East/West types it shifts the mask in the desired direction.
+      - For North/South East/West types of roads it shifts the mask in the desired direction.
       - For diagonal/angled lines it typically thickens the mask in the direction pressed.  
  - D Key = Nudge linestring East
  - S Key = Nudge linestring South
  - A Key = Nudge linestring West
 
  - Spacebar = Revert current linestring back to original state
- - Tab = Revert EVERY linestring back to original state and start back on the first of the linestrings to edit
- - Backspace = Move image to Bad Folder and start process over with next image
+ - Tab = Revert EVERY linestring back to original state and start back on the first of the line strings to edit
+ - Backspace = Move image to Bad Folder and start process with next image
+ - Enter key = Stitch line strings together into one mask and save result to the New Mask folder (and moves image to Modified folder)
+    - Note: Only works on final view screen
+ - Esc Key = Quit out of the script
