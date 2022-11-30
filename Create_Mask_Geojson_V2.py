@@ -2,6 +2,9 @@
 """
 Created on Thu Sep 29 2022
 @author: zczuba
+
+Script to generate masks for each image. End result is a folder for each image that has masks for each LineString in the geoJSON within
+
 """
 import os
 import fiona
