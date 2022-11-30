@@ -1,0 +1,18 @@
+Sanborn/RoadExtraction GitHub Notes
+ 
+create_dataset.py
+- Be sure that there’s no gaps in the names/numbers of the files from the data to be used to create the dataset
+- Relative paths rarely work for me, so I do absolute filepaths
+- I create the folders beforehand because I’m lazy and don’t trust the relative paths in the code to work
+- Line 73: change to “…randint(1, training_imgs)” if images start at 1 instead of 0
+- Adjust code to input .tif images if need be (Lines 76 and 77)
+- Lines 90 and 91 need fixing!
+    -   …start[0], start[1], end[0], end[1]
+- Line 136: change to “…range(1, NUM_OF_SAMLES + 1)):” if images start at 1 instead of 0
+- I manually move 20% to the test folder afterwards, grabbing the back 20% and running a python script to change the names of img/mask pairs to start counting at 1.png
+ 
+train_test.py
+- Line 29: change to “from utils import …”
+ 
+train.py
+- Line 15: change to “from utils import …”
