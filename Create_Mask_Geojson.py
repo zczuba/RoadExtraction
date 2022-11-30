@@ -2,6 +2,8 @@
 """
 Created on Thu Sep 29 2022
 @author: zczuba
+
+Script to generate a mask for each image based on the geoJSON. 
 """
 import os
 import fiona
